@@ -6,7 +6,7 @@ import java.io.File
 import java.util.*
 
 
-fun main(args: Array<String>)   {
+fun main(args: Array<String>){
     ArgParser(args).parseInto(::Uniq).start()
 }
 
