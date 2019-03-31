@@ -26,6 +26,7 @@ class Uniq (parser: ArgParser) {
 
     private val lines = mutableListOf<String>()
 
+
     fun start(){
         lines += inputData()
         val answer = launcher()
