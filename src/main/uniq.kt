@@ -12,13 +12,13 @@ fun main(args: Array<String>){
 
 class Uniq (parser: ArgParser) {
 
-    private val i by parser.flagging("-i", help = "Игнорирование регистра" )
+    private val ignore by parser.flagging("-i", help = "Игнорирование регистра" )
 
-    private val u by parser.flagging("-u", help = "Уникальные строки" )
+    private val unique by parser.flagging("-u", help = "Уникальные строки" )
 
-    private val c by parser.flagging("-c", help = "Кол-во повторяющихся строк" )
+    private val countStr by parser.flagging("-c", help = "Кол-во повторяющихся строк" )
 
-    private val s by parser.storing("-s", help = "Игнорирование первых N символов" ){ toInt() }.default(0)
+    private val skip by parser.storing("-s", help = "Игнорирование первых N символов" ){ toInt() }.default(0)
 
     private val oF by parser.storing("-o",help = "Файл назначения").default("")
 
@@ -41,14 +41,11 @@ class Uniq (parser: ArgParser) {
                 for (str in fileLines)
                     fileLinesOrCmd.add(str)
             } catch (e:Exception){
-                System.out.println("Некорректное имя входного файла")
+                println("Некорректное имя входного файла")
                 return emptyList()
             }
         } else {
-            var cmdIn = ""
-            while (cmdIn != "stop")
-                cmdIn = cmdInput()
-            fileLinesOrCmd.add(cmdIn)
+            fileLinesOrCmd.add(cmdInput())
         }
         return fileLinesOrCmd
     }
@@ -70,49 +67,59 @@ class Uniq (parser: ArgParser) {
                 }
                 outputFile.close()
             } catch(e: Exception) {
-                System.out.println("Некорректное имя выходного файла")
+                println("Некорректное имя выходного файла")
             }
         } else
             for (str in entry)
-                System.out.println(str)
+                println(str)
     }
 
 
     private fun checkIAndS(fString: String, sString: String): Boolean {
-        val fS = fString.removeRange(0, s)
-        val sS = sString.removeRange(0, s)
-        return if (i) {
+        val fS = fString.removeRange(0, skip)
+        val sS = sString.removeRange(0, skip)
+        return if (ignore) {
             fS.toLowerCase() == sS.toLowerCase()
         } else fS == sS
     }
 
-    private fun copyCheck(index: Int, str: String): Boolean {
-        val check = true
-        for(i in 0 until lines.size) {
-            if (checkIAndS(str, lines[i]) && index != i) !check; break
-        }
-        return check
-    }
 
     private fun launcher(): List<String> {
         val almostAnswer = mutableListOf<String>()
-        var str = lines[0]
-        var count = 1
-        if (u) {
-            for (i in 0 until lines.size) {
-                if (copyCheck(i, lines[i])) almostAnswer.add(lines[i])
-            }
+        var str = 0
+        val last = lines.last()
+        var count = 0
+        if (unique) {
+            val temp = lines
+            for (i in 0 until lines.size)
+                for (k in i until lines.size){
+                    if (checkIAndS(lines[k], lines[i]) && k != i) temp.remove(lines[k])
+                }
+            return temp
         } else {
-            if (c) {
-                for (line in lines) {
-                    if (checkIAndS(str, line)) count++
+            if (countStr) {
+                for (i in 0 until lines.size) {
+                    val out = lines[str]
+                    if (checkIAndS(lines[str], lines[i])) {
+                        count++
+                        if (lines[i] == lines.last()) almostAnswer.add("$count $out")
+                    }
                     else {
-                        almostAnswer.add("$count $str")
-                        str = line
+                        almostAnswer.add("$count $out")
+                        str = i
                         count = 1
+                        if (lines[i] == lines.last()) almostAnswer.add("$count $last")
                     }
                 }
-            } else almostAnswer += lines
+            } else {
+                for (i in 0 until lines.size) {
+                    if (!checkIAndS(lines[str], lines[i])) {
+                        almostAnswer.add(lines[str])
+                        str = i
+                    }
+                    else if (lines[i] == lines.last()) almostAnswer.add(lines[str])
+                }
+            }
         }
         return almostAnswer
     }
