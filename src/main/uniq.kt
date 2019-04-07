@@ -124,4 +124,3 @@ class Uniq (parser: ArgParser) {
         return almostAnswer
     }
 }
-
