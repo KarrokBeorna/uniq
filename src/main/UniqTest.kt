@@ -91,4 +91,55 @@ internal class UniqTest{
         }
         output.delete()
     }
+
+
+    @Test
+    fun ius() {
+        val output = File("output.txt")
+        val argsS = arrayOf("-i", "-u", "-s", "3", "-o", "output.txt", "src\\main\\Ex4.txt")
+        main.main(argsS)
+        try {
+
+            val outputFile = output.readLines()
+            assertEquals(listOf("1506BDODimaS", "0912BDODIMAS"), outputFile)
+
+        } catch (e: Exception) {
+            println("gg...")
+        }
+        output.delete()
+    }
+
+
+    @Test
+    fun ics() {
+        val output = File("output.txt")
+        val argsS = arrayOf("-i", "-c", "-s", "3", "-o", "output.txt", "src\\main\\Ex4.txt")
+        main.main(argsS)
+        try {
+
+            val outputFile = output.readLines()
+            assertEquals(listOf("1 1506BDODimaS", "2 0912BDODIMAS", "1 2806BDODiMaS"), outputFile)
+
+        } catch (e: Exception) {
+            println("gg...")
+        }
+        output.delete()
+    }
+
+
+    @Test
+    fun ic() {
+        val output = File("output.txt")
+        val argsS = arrayOf("-i", "-c", "-o", "output.txt", "src\\main\\Ex5.txt")
+        main.main(argsS)
+        try {
+
+            val outputFile = output.readLines()
+            assertEquals(listOf("4 Black"), outputFile)
+
+        } catch (e: Exception) {
+            println("gg...")
+        }
+        output.delete()
+    }
 }

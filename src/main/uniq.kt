@@ -34,6 +34,7 @@ class Uniq (parser: ArgParser) {
     }
 
     private fun inputData(): List<String> {
+
         val fileLinesOrCmd = mutableListOf<String>()
         if (iF.isNotEmpty()) {
             try {
@@ -45,19 +46,17 @@ class Uniq (parser: ArgParser) {
                 return emptyList()
             }
         } else {
-            fileLinesOrCmd.add(cmdInput())
+            while (cmdInput() != "стоп") fileLinesOrCmd.add(cmdInput())
         }
         return fileLinesOrCmd
     }
 
 
-    private fun cmdInput(): String {
-        val input = Scanner(System.`in`)
-        return input.nextLine()
-    }
+    private fun cmdInput(): String = readLine()!!
 
 
     private fun outputData(entry: List<String>) {
+
         if (oF.isNotEmpty()) {
             try {
                 val outputFile = File(oF).bufferedWriter()
@@ -78,6 +77,7 @@ class Uniq (parser: ArgParser) {
     private fun checkIAndS(fString: String, sString: String): Boolean {
         val fS = fString.removeRange(0, skip)
         val sS = sString.removeRange(0, skip)
+
         return if (ignore) {
             fS.toLowerCase() == sS.toLowerCase()
         } else fS == sS
@@ -100,15 +100,15 @@ class Uniq (parser: ArgParser) {
             if (countStr) {
                 for (i in 0 until lines.size) {
                     val out = lines[str]
-                    if (checkIAndS(lines[str], lines[i])) {
+                    if (checkIAndS(out, lines[i])) {
                         count++
-                        if (lines[i] == lines.last()) almostAnswer.add("$count $out")
+                        if (i == lines.size - 1) almostAnswer.add("$count $out")
                     }
                     else {
                         almostAnswer.add("$count $out")
                         str = i
                         count = 1
-                        if (lines[i] == lines.last()) almostAnswer.add("$count $last")
+                        if (i == lines.size - 1) almostAnswer.add("$count $last")
                     }
                 }
             } else {
@@ -117,7 +117,7 @@ class Uniq (parser: ArgParser) {
                         almostAnswer.add(lines[str])
                         str = i
                     }
-                    else if (lines[i] == lines.last()) almostAnswer.add(lines[str])
+                    else if (i == lines.size -1) almostAnswer.add(lines[str])
                 }
             }
         }
