@@ -84,7 +84,7 @@ internal class UniqTest{
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("1506BDO", "0912BDO"), outputFile)
+            assertEquals(listOf("1506BDO", "2806BDO"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")
@@ -101,7 +101,7 @@ internal class UniqTest{
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("1506BDODimaS", "0912BDODIMAS"), outputFile)
+            assertEquals(listOf("1506BDODimaS", "2806BDODiMaS"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")

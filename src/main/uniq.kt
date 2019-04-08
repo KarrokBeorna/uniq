@@ -3,7 +3,6 @@ package main
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import java.io.File
-import java.util.*
 
 
 fun main(args: Array<String>){
@@ -38,43 +37,38 @@ class Uniq (parser: ArgParser) {
         val fileLinesOrCmd = mutableListOf<String>()
         if (iF.isNotEmpty()) {
             try {
-                val fileLines = File(iF).readLines()
-                for (str in fileLines)
-                    fileLinesOrCmd.add(str)
+                fileLinesOrCmd += File(iF).readLines()
             } catch (e:Exception){
                 println("Некорректное имя входного файла")
                 return emptyList()
             }
         } else {
-            while (cmdInput() != "стоп") fileLinesOrCmd.add(cmdInput())
+            var cmdInput = readLine()
+            while (cmdInput != null) {
+                fileLinesOrCmd.add(cmdInput)
+                cmdInput = readLine()
+            }
         }
         return fileLinesOrCmd
     }
-
-
-    private fun cmdInput(): String = readLine()!!
 
 
     private fun outputData(entry: List<String>) {
 
         if (oF.isNotEmpty()) {
             try {
-                val outputFile = File(oF).bufferedWriter()
-                for (line in entry) {
-                    outputFile.write(line)
-                    outputFile.newLine()
-                }
-                outputFile.close()
+                val output = File(oF).bufferedWriter()
+                entry.forEach {output.write(it); output.newLine()}
+                output.close()
             } catch(e: Exception) {
                 println("Некорректное имя выходного файла")
             }
         } else
-            for (str in entry)
-                println(str)
+            for (str in entry) println(str)
     }
 
 
-    private fun checkIAndS(fString: String, sString: String): Boolean {
+    private fun checkIS(fString: String, sString: String): Boolean {
         val fS = fString.removeRange(0, skip)
         val sS = sString.removeRange(0, skip)
 
@@ -86,25 +80,26 @@ class Uniq (parser: ArgParser) {
 
     private fun launcher(): List<String> {
         val almostAnswer = mutableListOf<String>()
-        var str = 0
-        val last = lines.last()
-        var count = 0
         if (unique) {
-            val temp = lines
-            for (i in 0 until lines.size)
-                for (k in i until lines.size){
-                    if (checkIAndS(lines[k], lines[i]) && k != i) temp.remove(lines[k])
+            for (i in 0 until lines.size) {
+                when (i) {
+                    0 -> if (!checkIS(lines[i], lines[i + 1])) almostAnswer.add(lines[i])
+                    lines.size - 1 -> if (!checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
+                    else -> if (!checkIS(lines[i], lines[i + 1]) && !checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
                 }
-            return temp
+            }
         } else {
+            var str = 0
+            val last = lines.last()
             if (countStr) {
+                var count = 0
                 for (i in 0 until lines.size) {
-                    val out = lines[str]
-                    if (checkIAndS(out, lines[i])) {
-                        count++
-                        if (i == lines.size - 1) almostAnswer.add("$count $out")
-                    }
-                    else {
+                    val out = lines[str]                                             //вынужден оставить как
+                    if (checkIS(out, lines[i])) {                                    //"$count $out", так и
+                        count++                                                      //"$count $last", потому что out и
+                        if (i == lines.size - 1) almostAnswer.add("$count $out")     //last могут быть разными,
+                    }                                                                //следовательно, и вывод будет
+                    else {                                                           //разным
                         almostAnswer.add("$count $out")
                         str = i
                         count = 1
@@ -113,11 +108,12 @@ class Uniq (parser: ArgParser) {
                 }
             } else {
                 for (i in 0 until lines.size) {
-                    if (!checkIAndS(lines[str], lines[i])) {
+                    if (!checkIS(lines[str], lines[i])) {
                         almostAnswer.add(lines[str])
                         str = i
+                        if (i == lines.size - 1) almostAnswer.add(lines[i])
                     }
-                    else if (i == lines.size -1) almostAnswer.add(lines[str])
+                    else if (i == lines.size - 1) almostAnswer.add(lines[str])
                 }
             }
         }
