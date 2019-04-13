@@ -1,18 +1,14 @@
-package main
-
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 
-internal class UniqTest{
+class UniqTest {
 
     @Test
     fun i() {
         val output = File("output.txt")
-        val argsI = arrayOf("-i", "-o", "output.txt", "src\\main\\Ex1.txt")
-        main.main(argsI)
+        val argsI = arrayOf("-i", "-o", "output.txt", "test\\TestExamples\\Ex1.txt")
+        main(argsI)
         try {
 
             val outputFile = output.readLines()
@@ -28,8 +24,8 @@ internal class UniqTest{
     @Test
     fun u() {
         val output = File("output.txt")
-        val argsU = arrayOf("-u", "-o", "output.txt", "src\\main\\Ex1.txt")
-        main.main(argsU)
+        val argsU = arrayOf("-u", "-o", "output.txt", "test\\TestExamples\\Ex1.txt")
+        main(argsU)
         try {
 
             val outputFile = output.readLines()
@@ -45,8 +41,8 @@ internal class UniqTest{
     @Test
     fun c() {
         val output = File("output.txt")
-        val argsC = arrayOf("-c", "-o", "output.txt", "src\\main\\Ex1.txt")
-        main.main(argsC)
+        val argsC = arrayOf("-c", "-o", "output.txt", "test\\TestExamples\\Ex1.txt")
+        main(argsC)
         try {
 
             val outputFile = output.readLines()
@@ -62,8 +58,8 @@ internal class UniqTest{
     @Test
     fun s() {
         val output = File("output.txt")
-        val argsS = arrayOf("-s", "3", "-o", "output.txt", "src\\main\\Ex2.txt")
-        main.main(argsS)
+        val argsS = arrayOf("-s", "3", "-o", "output.txt", "test\\TestExamples\\Ex2.txt")
+        main(argsS)
         try {
 
             val outputFile = output.readLines()
@@ -79,8 +75,8 @@ internal class UniqTest{
     @Test
     fun us() {
         val output = File("output.txt")
-        val argsS = arrayOf("-u", "-s", "3", "-o", "output.txt", "src\\main\\Ex3.txt")
-        main.main(argsS)
+        val argsS = arrayOf("-u", "-s", "3", "-o", "output.txt", "test\\TestExamples\\Ex3.txt")
+        main(argsS)
         try {
 
             val outputFile = output.readLines()
@@ -96,8 +92,8 @@ internal class UniqTest{
     @Test
     fun ius() {
         val output = File("output.txt")
-        val argsS = arrayOf("-i", "-u", "-s", "3", "-o", "output.txt", "src\\main\\Ex4.txt")
-        main.main(argsS)
+        val argsS = arrayOf("-i", "-u", "-s", "3", "-o", "output.txt", "test\\TestExamples\\Ex4.txt")
+        main(argsS)
         try {
 
             val outputFile = output.readLines()
@@ -113,8 +109,8 @@ internal class UniqTest{
     @Test
     fun ics() {
         val output = File("output.txt")
-        val argsS = arrayOf("-i", "-c", "-s", "3", "-o", "output.txt", "src\\main\\Ex4.txt")
-        main.main(argsS)
+        val argsS = arrayOf("-i", "-c", "-s", "3", "-o", "output.txt", "test\\TestExamples\\Ex4.txt")
+        main(argsS)
         try {
 
             val outputFile = output.readLines()
@@ -130,8 +126,8 @@ internal class UniqTest{
     @Test
     fun ic() {
         val output = File("output.txt")
-        val argsS = arrayOf("-i", "-c", "-o", "output.txt", "src\\main\\Ex5.txt")
-        main.main(argsS)
+        val argsS = arrayOf("-i", "-c", "-o", "output.txt", "test\\TestExamples\\Ex5.txt")
+        main(argsS)
         try {
 
             val outputFile = output.readLines()
