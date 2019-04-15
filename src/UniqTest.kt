@@ -12,7 +12,7 @@ class UniqTest {
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("BlackDesert"), outputFile)
+            assertEquals(listOf("BLACKDESERT"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")
@@ -63,7 +63,7 @@ class UniqTest {
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("FufBDO"), outputFile)
+            assertEquals(listOf("WoTBDO"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")
@@ -114,7 +114,7 @@ class UniqTest {
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("1 1506BDODimaS", "2 0912BDODIMAS", "1 2806BDODiMaS"), outputFile)
+            assertEquals(listOf("1 1506BDODimaS", "2 0212BDOdimas", "1 2806BDODiMaS"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")
@@ -131,7 +131,7 @@ class UniqTest {
         try {
 
             val outputFile = output.readLines()
-            assertEquals(listOf("4 Black"), outputFile)
+            assertEquals(listOf("4 blacK"), outputFile)
 
         } catch (e: Exception) {
             println("gg...")

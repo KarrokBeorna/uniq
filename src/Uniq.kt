@@ -67,8 +67,8 @@ class Uniq (parser: ArgParser) {
 
 
     private fun checkIS(fString: String, sString: String): Boolean {
-        val fS = fString.removeRange(0, skip)
-        val sS = sString.removeRange(0, skip)
+        val fS = fString.drop(skip)
+        val sS = sString.drop(skip)
 
         return if (ignore) {
             fS.toLowerCase() == sS.toLowerCase()
@@ -78,44 +78,40 @@ class Uniq (parser: ArgParser) {
 
     private fun launcher(): List<String> {
         val almostAnswer = mutableListOf<String>()
-        if (unique) {
-            for (i in 0 until lines.size) {
-                when (i) {
-                    0 -> if (!checkIS(lines[i], lines[i + 1])) almostAnswer.add(lines[i])
-                    lines.size - 1 -> if (!checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
-                    else -> if (!checkIS(lines[i], lines[i + 1]) && !checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
-                }
-            }
-        } else {
-            var str = 0
-            val last = lines.last()
-            val size = lines.size - 1
-            if (countStr) {
-                var count = 0
-                for (i in 0 until lines.size) {
-                    val out = lines[str]                                             //вынужден оставить как
-                    if (checkIS(out, lines[i])) {                                    //"$count $out", так и
-                        count++                                                      //"$count $last", потому что out и
-                        if (i == size) almostAnswer.add("$count $out")               //last могут быть разными,
-                    }                                                                //следовательно, и вывод будет
-                    else {                                                           //разным
-                        almostAnswer.add("$count $out")
-                        str = i
-                        count = 1
-                        if (i == size) almostAnswer.add("$count $last")
+        val size = lines.size - 1
+        if (size <= 0) return lines
+        else {
+            if (unique) {
+                if (!checkIS(lines[0], lines[1])) almostAnswer.add(lines[0])
+                if (size != 1) {
+                    for (i in 1 until size) {
+                        if (!checkIS(lines[i], lines[i + 1]) && !checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
                     }
                 }
+                if (!checkIS(lines[size], lines[size - 1])) almostAnswer.add(lines[size])
             } else {
-                for (i in 0 until lines.size) {
-                    if (!checkIS(lines[str], lines[i])) {
-                        almostAnswer.add(lines[str])
-                        str = i
-                        if (i == size) almostAnswer.add(lines[i])
+                val last = lines.last()
+                if (countStr) {
+                    var count = 1
+                    for (i in 0 until size) {
+                        val out = lines[i]
+                        if (checkIS(out, lines[i + 1])) {
+                            count++
+                        } else {
+                            almostAnswer.add("$count $out")
+                            count = 1
+                        }
+                        if (i == size - 1) almostAnswer.add("$count $last")
                     }
-                    else if (i == size) almostAnswer.add(lines[str])
+                } else {
+                    for (i in 0 until size) {
+                        if (!checkIS(lines[i], lines[i + 1])) {
+                            almostAnswer.add(lines[i])
+                        } else if (i == size - 1) almostAnswer.add(last)
+                    }
                 }
             }
+            return almostAnswer
         }
-        return almostAnswer
     }
 }
