@@ -9,25 +9,24 @@ fun main(args: Array<String>){
 
 class Uniq (parser: ArgParser) {
 
-    private val ignore by parser.flagging("-i", help = "Игнорирование регистра" )
+    private val ignore by parser.flagging("-i", help = "Игнорирование регистра")
 
-    private val unique by parser.flagging("-u", help = "Уникальные строки" )
+    private val unique by parser.flagging("-u", help = "Уникальные строки")
 
-    private val countStr by parser.flagging("-c", help = "Кол-во повторяющихся строк" )
+    private val countStr by parser.flagging("-c", help = "Кол-во повторяющихся строк")
 
-    private val skip by parser.storing("-s", help = "Игнорирование первых N символов" ){ toInt() }.default(0)
+    private val skip by parser.storing("-s", help = "Игнорирование первых N символов") { toInt() }.default(0)
 
-    private val oF by parser.storing("-o",help = "Файл назначения").default("")
+    private val oF by parser.storing("-o", help = "Файл назначения").default("")
 
-    private val iF by parser.positional( "Имя входного файла").default("")
+    private val iF by parser.positional("Имя входного файла").default("")
 
     private val lines = mutableListOf<String>()
 
 
-    fun start(){
+    fun start() {
         lines += inputData()
-        val answer = launcher()
-        outputData(answer)
+        outputData(launcher())
     }
 
     private fun inputData(): List<String> {
@@ -36,9 +35,8 @@ class Uniq (parser: ArgParser) {
         if (iF.isNotEmpty()) {
             try {
                 fileLinesOrCmd += File(iF).readLines()
-            } catch (e:Exception){
+            } catch (e: Exception) {
                 println("Некорректное имя входного файла")
-                return emptyList()
             }
         } else {
             var cmdInput = readLine()
@@ -56,9 +54,9 @@ class Uniq (parser: ArgParser) {
         if (oF.isNotEmpty()) {
             try {
                 val output = File(oF).bufferedWriter()
-                entry.forEach {output.write(it); output.newLine()}
+                entry.forEach { output.write(it); output.newLine() }
                 output.close()
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 println("Некорректное имя выходного файла")
             }
         } else
@@ -76,42 +74,55 @@ class Uniq (parser: ArgParser) {
     }
 
 
+    private fun unique(): List<String> {
+        val almostAnswer = mutableListOf<String>()
+        if (!checkIS(lines[0], lines[1])) almostAnswer.add(lines[0])
+        if (lines.size > 2) {
+            for (i in 1..lines.size - 2) {
+                if (!checkIS(lines[i], lines[i + 1]) && !checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
+            }
+        }
+        if (!checkIS(lines[lines.size - 1], lines[lines.size - 2])) almostAnswer.add(lines[lines.size - 1])
+        return almostAnswer
+    }
+
+    private fun countStr(): List<String> {
+        val almostAnswer = mutableListOf<String>()
+        val last = lines.last()
+        var count = 1
+        for (i in 0..lines.size - 2) {
+            val out = lines[i]
+            if (checkIS(out, lines[i + 1])) {
+                count++
+            } else {
+                almostAnswer.add("$count $out")
+                count = 1
+            }
+            if (i == lines.size - 2) almostAnswer.add("$count $last")
+        }
+        return almostAnswer
+    }
+
+
     private fun launcher(): List<String> {
         val almostAnswer = mutableListOf<String>()
-        val size = lines.size - 1
-        if (size <= 0) return lines
-        else {
-            if (unique) {
-                if (!checkIS(lines[0], lines[1])) almostAnswer.add(lines[0])
-                if (size != 1) {
-                    for (i in 1 until size) {
-                        if (!checkIS(lines[i], lines[i + 1]) && !checkIS(lines[i - 1], lines[i])) almostAnswer.add(lines[i])
-                    }
-                }
-                if (!checkIS(lines[size], lines[size - 1])) almostAnswer.add(lines[size])
-            } else {
+        when (lines.size) {
+            0 -> return emptyList()
+            1 -> if (countStr) almostAnswer.add("1 ${lines[0]}") else return lines
+            else -> {
                 val last = lines.last()
-                if (countStr) {
-                    var count = 1
-                    for (i in 0 until size) {
-                        val out = lines[i]
-                        if (checkIS(out, lines[i + 1])) {
-                            count++
-                        } else {
-                            almostAnswer.add("$count $out")
-                            count = 1
+                when {
+                    unique -> return unique()
+                    countStr -> return countStr()
+                    else ->
+                        for (i in 0..lines.size - 2) {
+                            if (!checkIS(lines[i], lines[i + 1])) {
+                                almostAnswer.add(lines[i])
+                            } else if (i == lines.size - 2) almostAnswer.add(last)
                         }
-                        if (i == size - 1) almostAnswer.add("$count $last")
-                    }
-                } else {
-                    for (i in 0 until size) {
-                        if (!checkIS(lines[i], lines[i + 1])) {
-                            almostAnswer.add(lines[i])
-                        } else if (i == size - 1) almostAnswer.add(last)
                     }
                 }
             }
-            return almostAnswer
-        }
+        return almostAnswer
     }
 }
