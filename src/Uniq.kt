@@ -84,17 +84,15 @@ class Uniq (parser: ArgParser) {
     }
 
     private fun countStr(): List<String> {
-        val last = lines.last()
         var count = 1
         for (i in 0..lines.size - 2) {
-            val out = lines[i]
-            if (checkIS(out, lines[i + 1])) {
+            if (checkIS(lines[i], lines[i + 1])) {
                 count++
             } else {
-                almostAnswer.add("$count $out")
+                almostAnswer.add("$count ${lines[i]}")
                 count = 1
             }
-            if (i == lines.size - 2) almostAnswer.add("$count $last")
+            if (i == lines.size - 2) almostAnswer.add("$count ${lines.last()}")
         }
         return almostAnswer
     }
@@ -105,7 +103,6 @@ class Uniq (parser: ArgParser) {
             0 -> return emptyList()
             1 -> if (countStr) almostAnswer.add("1 ${lines[0]}") else return lines
             else -> {
-                val last = lines.last()
                 when {
                     unique -> return unique()
                     countStr -> return countStr()
@@ -113,7 +110,7 @@ class Uniq (parser: ArgParser) {
                         for (i in 0..lines.size - 2) {
                             if (!checkIS(lines[i], lines[i + 1])) {
                                 almostAnswer.add(lines[i])
-                            } else if (i == lines.size - 2) almostAnswer.add(last)
+                            } else if (i == lines.size - 2) almostAnswer.add(lines.last())
                         }
                     }
                 }
