@@ -30,7 +30,6 @@ class Uniq (parser: ArgParser) {
     }
 
     private fun inputData(): List<String> {
-
         val fileLinesOrCmd = mutableListOf<String>()
         if (iF.isNotEmpty()) {
             try {
@@ -50,12 +49,9 @@ class Uniq (parser: ArgParser) {
 
 
     private fun outputData(entry: List<String>) {
-
         if (oF.isNotEmpty()) {
             try {
-                val output = File(oF).bufferedWriter()
-                entry.forEach { output.write(it); output.newLine() }
-                output.close()
+                File(oF).bufferedWriter().use {out -> entry.forEach { out.write("$it\n") }}
             } catch (e: Exception) {
                 println("Некорректное имя выходного файла")
             }
@@ -74,8 +70,9 @@ class Uniq (parser: ArgParser) {
     }
 
 
+    private val almostAnswer = mutableListOf<String>()
+
     private fun unique(): List<String> {
-        val almostAnswer = mutableListOf<String>()
         if (!checkIS(lines[0], lines[1])) almostAnswer.add(lines[0])
         if (lines.size > 2) {
             for (i in 1..lines.size - 2) {
@@ -87,7 +84,6 @@ class Uniq (parser: ArgParser) {
     }
 
     private fun countStr(): List<String> {
-        val almostAnswer = mutableListOf<String>()
         val last = lines.last()
         var count = 1
         for (i in 0..lines.size - 2) {
@@ -105,7 +101,6 @@ class Uniq (parser: ArgParser) {
 
 
     private fun launcher(): List<String> {
-        val almostAnswer = mutableListOf<String>()
         when (lines.size) {
             0 -> return emptyList()
             1 -> if (countStr) almostAnswer.add("1 ${lines[0]}") else return lines
