@@ -47,7 +47,6 @@ class Uniq (parser: ArgParser) {
         return fileLinesOrCmd
     }
 
-
     private fun outputData(entry: List<String>) {
         if (oF.isNotEmpty()) {
             try {
@@ -60,6 +59,8 @@ class Uniq (parser: ArgParser) {
     }
 
 
+    private val almostAnswer = mutableListOf<String>()
+
     private fun checkIS(fString: String, sString: String): Boolean {
         val fS = fString.drop(skip)
         val sS = sString.drop(skip)
@@ -68,9 +69,6 @@ class Uniq (parser: ArgParser) {
             fS.toLowerCase() == sS.toLowerCase()
         } else fS == sS
     }
-
-
-    private val almostAnswer = mutableListOf<String>()
 
     private fun unique(): List<String> {
         if (!checkIS(lines[0], lines[1])) almostAnswer.add(lines[0])
@@ -110,6 +108,7 @@ class Uniq (parser: ArgParser) {
                         for (i in 0..lines.size - 2) {
                             if (!checkIS(lines[i], lines[i + 1])) {
                                 almostAnswer.add(lines[i])
+                                if (i == lines.size - 2) almostAnswer.add(lines.last())
                             } else if (i == lines.size - 2) almostAnswer.add(lines.last())
                         }
                     }
