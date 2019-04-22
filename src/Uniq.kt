@@ -49,11 +49,7 @@ class Uniq (parser: ArgParser) {
 
     private fun outputData(entry: List<String>) {
         if (oF.isNotEmpty()) {
-            try {
-                File(oF).bufferedWriter().use {out -> entry.forEach { out.write("$it\n") }}
-            } catch (e: Exception) {
-                println("Некорректное имя выходного файла")
-            }
+            File(oF).bufferedWriter().use {out -> entry.forEach { out.write("$it\n") }}
         } else
             for (str in entry) println(str)
     }
